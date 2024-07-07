@@ -47,6 +47,13 @@ llvm.func @init_mbarrier_try_wait_shared(%barrier : !llvm.ptr<3>, %ticks : i32, 
   llvm.return
 }
 
+// CHECK-LABEL: @init_mbarrier_try_wait_shared_no_loop
+llvm.func @init_mbarrier_try_wait_shared_no_loop(%barrier : !llvm.ptr<3>, %ticks : i32, %phase : i32) {
+  // CHECK: llvm.inline_asm has_side_effects asm_dialect = att "mbarrier.try_wait.parity.shared.b64 P1, [$0], $1, $2;", "r,r,r"
+  nvvm.mbarrier.try_wait.parity.shared %barrier, %phase, %ticks {no_loop} : !llvm.ptr<3>, i32, i32
+  llvm.return
+}
+
 // CHECK-LABEL: @init_mbarrier_try_wait
 llvm.func @init_mbarrier_try_wait(%barrier : !llvm.ptr, %ticks : i32, %phase : i32){
   // CHECK: llvm.inline_asm has_side_effects asm_dialect = att
@@ -60,6 +67,13 @@ llvm.func @init_mbarrier_try_wait(%barrier : !llvm.ptr, %ticks : i32, %phase : i
   // CHECK-SAME: }",
   // CHECK-SAME: "l,r,r"
   nvvm.mbarrier.try_wait.parity %barrier, %phase, %ticks : !llvm.ptr, i32, i32
+  llvm.return
+}
+
+// CHECK-LABEL: @init_mbarrier_try_wait_no_loop
+llvm.func @init_mbarrier_try_wait_no_loop(%barrier : !llvm.ptr, %ticks : i32, %phase : i32){
+  // CHECK: llvm.inline_asm has_side_effects asm_dialect = att "mbarrier.try_wait.parity.b64 P1, [$0], $1, $2;", "l,r,r"
+  nvvm.mbarrier.try_wait.parity %barrier, %phase, %ticks {no_loop} : !llvm.ptr, i32, i32
   llvm.return
 }
 

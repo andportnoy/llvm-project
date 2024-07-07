@@ -324,10 +324,13 @@ def NVVM_MBarrierArriveExpectTxSharedOp : NVVM_PTXBuilder_Op<"mbarrier.arrive.ex
 }
 
 def NVVM_MBarrierTryWaitParityOp : NVVM_PTXBuilder_Op<"mbarrier.try_wait.parity">,  
-  Arguments<(ins LLVM_AnyPointer:$addr, I32:$phase, I32:$ticks)> {  
+  Arguments<(ins LLVM_AnyPointer:$addr, I32:$phase, I32:$ticks, UnitAttr:$no_loop)> {
   let assemblyFormat = "$addr `,` $phase `,` $ticks attr-dict `:` type(operands)";
   let extraClassDefinition = [{
     std::string $cppClass::getPtx() {
+      if (getNoLoop()) {
+        return std::string("mbarrier.try_wait.parity.b64 P1, [%0], %1, %2;");
+      }
       return std::string(
         "{\n\t"
         ".reg .pred       P1; \n\t"
@@ -343,10 +346,13 @@ def NVVM_MBarrierTryWaitParityOp : NVVM_PTXBuilder_Op<"mbarrier.try_wait.parity"
 }
 
 def NVVM_MBarrierTryWaitParitySharedOp : NVVM_PTXBuilder_Op<"mbarrier.try_wait.parity.shared">,  
-  Arguments<(ins LLVM_PointerShared:$addr, I32:$phase, I32:$ticks)> {  
+  Arguments<(ins LLVM_PointerShared:$addr, I32:$phase, I32:$ticks, UnitAttr:$no_loop)> {
   let assemblyFormat = "$addr `,` $phase `,` $ticks attr-dict `:` type(operands)";
   let extraClassDefinition = [{
     std::string $cppClass::getPtx() {
+      if (getNoLoop()) {
+        return std::string("mbarrier.try_wait.parity.shared.b64 P1, [%0], %1, %2;");
+      }
       return std::string(
         "{\n\t"
         ".reg .pred       P1; \n\t"

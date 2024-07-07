@@ -961,12 +961,12 @@ struct NVGPUMBarrierTryWaitParityLowering
 
     if (isMbarrierShared(op.getBarriers().getType())) {
       rewriter.replaceOpWithNewOp<NVVM::MBarrierTryWaitParitySharedOp>(
-          op, barrier, phase, ticks);
+          op, barrier, phase, ticks, /*no_loop=*/nullptr);
       return success();
     }
 
     rewriter.replaceOpWithNewOp<NVVM::MBarrierTryWaitParityOp>(op, barrier,
-                                                               phase, ticks);
+                                                               phase, ticks, /*no_loop=*/nullptr);
     return success();
   }
 };
