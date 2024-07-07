@@ -336,9 +336,7 @@ def NVVM_MBarrierTryWaitParityOp : NVVM_PTXBuilder_Op<"mbarrier.try_wait.parity"
         ".reg .pred       P1; \n\t"
         "LAB_WAIT: \n\t"
         "mbarrier.try_wait.parity.b64 P1, [%0], %1, %2; \n\t"
-        "@P1 bra.uni DONE; \n\t"
-        "bra.uni     LAB_WAIT; \n\t"
-        "DONE: \n\t"
+        "@!P1 bra LAB_WAIT; \n\t"
         "}"
       ); 
     }
@@ -358,9 +356,7 @@ def NVVM_MBarrierTryWaitParitySharedOp : NVVM_PTXBuilder_Op<"mbarrier.try_wait.p
         ".reg .pred       P1; \n\t"
         "LAB_WAIT: \n\t"
         "mbarrier.try_wait.parity.shared.b64 P1, [%0], %1, %2; \n\t"
-        "@P1 bra.uni DONE; \n\t"
-        "bra.uni     LAB_WAIT; \n\t"
-        "DONE: \n\t"
+        "@!P1 bra LAB_WAIT; \n\t"
         "}"
       ); 
     }

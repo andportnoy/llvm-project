@@ -38,9 +38,7 @@ llvm.func @init_mbarrier_try_wait_shared(%barrier : !llvm.ptr<3>, %ticks : i32, 
   // CHECK-SAME: .reg .pred       P1;
   // CHECK-SAME: LAB_WAIT: 
   // CHECK-SAME: mbarrier.try_wait.parity.shared.b64 P1, [$0], $1, $2;
-  // CHECK-SAME: @P1 bra.uni DONE;
-  // CHECK-SAME: bra.uni     LAB_WAIT;
-  // CHECK-SAME: DONE:
+  // CHECK-SAME: @!P1 bra LAB_WAIT;
   // CHECK-SAME: }",
   // CHECK-SAME: "r,r,r"
    nvvm.mbarrier.try_wait.parity.shared %barrier, %phase, %ticks : !llvm.ptr<3>, i32, i32
@@ -61,9 +59,7 @@ llvm.func @init_mbarrier_try_wait(%barrier : !llvm.ptr, %ticks : i32, %phase : i
   // CHECK-SAME: .reg .pred       P1;
   // CHECK-SAME: LAB_WAIT: 
   // CHECK-SAME: mbarrier.try_wait.parity.b64 P1, [$0], $1, $2;
-  // CHECK-SAME: @P1 bra.uni DONE;
-  // CHECK-SAME: bra.uni     LAB_WAIT;
-  // CHECK-SAME: DONE:
+  // CHECK-SAME: @!P1 bra LAB_WAIT;
   // CHECK-SAME: }",
   // CHECK-SAME: "l,r,r"
   nvvm.mbarrier.try_wait.parity %barrier, %phase, %ticks : !llvm.ptr, i32, i32
